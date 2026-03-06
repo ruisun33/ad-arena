@@ -1,0 +1,80 @@
+name: SearchAds-v1
+duration_days: 30
+agent_budget: 10000.0
+reserve_price: 0.10
+seed: 42
+keywords:
+  # === PROFITABLE: high intent, good unit economics ===
+  - text: "buy running shoes online"
+    daily_volume: 120
+    base_cpc: 3.50
+    base_cvr: 0.10
+    avg_order_value: 130.0
+    intent: transactional
+  - text: "waterproof trail running shoes"
+    daily_volume: 35
+    base_cpc: 1.80
+    base_cvr: 0.12
+    avg_order_value: 170.0
+    intent: transactional
+  - text: "running shoes for flat feet"
+    daily_volume: 50
+    base_cpc: 1.50
+    base_cvr: 0.09
+    avg_order_value: 145.0
+    intent: commercial
+
+  # === MARGINAL: can be profitable with the right bid ===
+  - text: "best running shoes"
+    daily_volume: 200
+    base_cpc: 3.00
+    base_cvr: 0.05
+    avg_order_value: 130.0
+    intent: commercial
+  - text: "running shoes sale"
+    daily_volume: 300
+    base_cpc: 2.00
+    base_cvr: 0.06
+    avg_order_value: 85.0
+    intent: transactional
+  - text: "nike pegasus review"
+    daily_volume: 100
+    base_cpc: 1.20
+    base_cvr: 0.05
+    avg_order_value: 130.0
+    intent: commercial
+
+  # === TRAPS: high volume but poor economics ===
+  - text: "running shoes"
+    daily_volume: 600
+    base_cpc: 2.80
+    base_cvr: 0.02
+    avg_order_value: 110.0
+    intent: commercial
+  - text: "cheap running shoes"
+    daily_volume: 500
+    base_cpc: 1.20
+    base_cvr: 0.02
+    avg_order_value: 45.0
+    intent: transactional
+
+  # === MONEY PITS: informational, very low conversion ===
+  - text: "how to choose running shoes"
+    daily_volume: 300
+    base_cpc: 0.70
+    base_cvr: 0.005
+    avg_order_value: 110.0
+    intent: informational
+  - text: "running shoes vs walking shoes"
+    daily_volume: 200
+    base_cpc: 0.60
+    base_cvr: 0.004
+    avg_order_value: 100.0
+    intent: informational
+competitors:
+  - type: aggressive
+    daily_budget: 500.0
+  - type: conservative
+    daily_budget: 200.0
+  - type: smart
+    daily_budget: 350.0

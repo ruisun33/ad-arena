@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "ad-arena"
+version = "1.0.0"
+description = "A simulated search-ads auction environment for benchmarking bidding algorithms"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.24", "pyyaml>=6.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "pytest-cov", "hypothesis>=6.0"]
+
+[project.scripts]
+aag-run = "ad_arena.cli:main"
+aag-benchmark = "ad_arena.cli:benchmark_main"
+aag-leaderboard = "ad_arena.cli:leaderboard_main"
+aag-results = "ad_arena.cli:results_main"

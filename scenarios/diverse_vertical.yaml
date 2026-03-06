@@ -1,0 +1,82 @@
+name: DiverseVertical-v1
+duration_days: 30
+agent_budget: 10000.0
+reserve_price: 0.10
+seed: 42
+keywords:
+  # === ELECTRONICS: high AOV, competitive ===
+  - text: "buy 4k oled tv"
+    daily_volume: 80
+    base_cpc: 5.00
+    base_cvr: 0.06
+    avg_order_value: 1200.0
+    intent: transactional
+  - text: "noise cancelling headphones"
+    daily_volume: 150
+    base_cpc: 2.50
+    base_cvr: 0.08
+    avg_order_value: 280.0
+    intent: commercial
+
+  # === HOME GOODS: moderate AOV, lower competition ===
+  - text: "organic cotton bed sheets"
+    daily_volume: 60
+    base_cpc: 1.20
+    base_cvr: 0.11
+    avg_order_value: 95.0
+    intent: transactional
+  - text: "best air purifier for allergies"
+    daily_volume: 110
+    base_cpc: 1.80
+    base_cvr: 0.07
+    avg_order_value: 220.0
+    intent: commercial
+
+  # === FASHION: low AOV, high volume ===
+  - text: "summer dresses on sale"
+    daily_volume: 400
+    base_cpc: 0.90
+    base_cvr: 0.04
+    avg_order_value: 45.0
+    intent: transactional
+  - text: "mens casual sneakers"
+    daily_volume: 250
+    base_cpc: 1.50
+    base_cvr: 0.05
+    avg_order_value: 75.0
+    intent: commercial
+
+  # === HIGH-VALUE NICHE: very high AOV, low volume ===
+  - text: "ergonomic standing desk"
+    daily_volume: 25
+    base_cpc: 4.00
+    base_cvr: 0.09
+    avg_order_value: 650.0
+    intent: transactional
+  - text: "espresso machine with grinder"
+    daily_volume: 40
+    base_cpc: 3.00
+    base_cvr: 0.07
+    avg_order_value: 500.0
+    intent: commercial
+
+  # === TRAPS: informational, very low conversion ===
+  - text: "how to decorate a small apartment"
+    daily_volume: 350
+    base_cpc: 0.50
+    base_cvr: 0.003
+    avg_order_value: 80.0
+    intent: informational
+  - text: "best laptop for students"
+    daily_volume: 500
+    base_cpc: 1.80
+    base_cvr: 0.01
+    avg_order_value: 800.0
+    intent: informational
+competitors:
+  - type: aggressive
+    daily_budget: 500.0
+  - type: conservative
+    daily_budget: 250.0
+  - type: smart
+    daily_budget: 400.0

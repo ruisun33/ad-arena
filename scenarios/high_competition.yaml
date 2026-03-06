@@ -1,0 +1,84 @@
+name: HighCompetition-v1
+duration_days: 30
+agent_budget: 5000.0
+reserve_price: 0.20
+seed: 42
+keywords:
+  # Same 10 keywords as SearchAds-v1 but with higher base_cpc (expensive market)
+
+  # === PROFITABLE: high intent, good unit economics ===
+  - text: "buy running shoes online"
+    daily_volume: 120
+    base_cpc: 5.00
+    base_cvr: 0.10
+    avg_order_value: 130.0
+    intent: transactional
+  - text: "waterproof trail running shoes"
+    daily_volume: 35
+    base_cpc: 3.00
+    base_cvr: 0.12
+    avg_order_value: 170.0
+    intent: transactional
+  - text: "running shoes for flat feet"
+    daily_volume: 50
+    base_cpc: 2.50
+    base_cvr: 0.09
+    avg_order_value: 145.0
+    intent: commercial
+
+  # === MARGINAL: can be profitable with the right bid ===
+  - text: "best running shoes"
+    daily_volume: 200
+    base_cpc: 4.50
+    base_cvr: 0.05
+    avg_order_value: 130.0
+    intent: commercial
+  - text: "running shoes sale"
+    daily_volume: 300
+    base_cpc: 3.20
+    base_cvr: 0.06
+    avg_order_value: 85.0
+    intent: transactional
+  - text: "nike pegasus review"
+    daily_volume: 100
+    base_cpc: 2.00
+    base_cvr: 0.05
+    avg_order_value: 130.0
+    intent: commercial
+
+  # === TRAPS: high volume but poor economics ===
+  - text: "running shoes"
+    daily_volume: 600
+    base_cpc: 4.20
+    base_cvr: 0.02
+    avg_order_value: 110.0
+    intent: commercial
+  - text: "cheap running shoes"
+    daily_volume: 500
+    base_cpc: 2.00
+    base_cvr: 0.02
+    avg_order_value: 45.0
+    intent: transactional
+
+  # === MONEY PITS: informational, very low conversion ===
+  - text: "how to choose running shoes"
+    daily_volume: 300
+    base_cpc: 1.20
+    base_cvr: 0.005
+    avg_order_value: 110.0
+    intent: informational
+  - text: "running shoes vs walking shoes"
+    daily_volume: 200
+    base_cpc: 1.00
+    base_cvr: 0.004
+    avg_order_value: 100.0
+    intent: informational
+competitors:
+  - type: aggressive
+    daily_budget: 800.0
+  - type: aggressive
+    daily_budget: 700.0
+  - type: smart
+    daily_budget: 600.0
+  - type: conservative
+    daily_budget: 400.0
