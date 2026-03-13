@@ -1,7 +1,7 @@
 """
 Example submission: selective keyword targeting with relevant ad copy.
 
-Run with:  aag-run --bidder examples/my_bidder.py
+Run with:  arena-run --bidder examples/my_bidder.py
 """
 
 from ad_arena.agents.bidder import Bidder, EpisodeConfig

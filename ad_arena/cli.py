@@ -3,13 +3,13 @@ CLI entry point for running evaluations.
 
 Usage:
     # Run all baselines
-    aag-run
+    arena-run
 
     # Run a custom bidder
-    aag-run --bidder path/to/my_bidder.py
+    arena-run --bidder path/to/my_bidder.py
 
     # Custom seed
-    aag-run --seed 123
+    arena-run --seed 123
 """
 
 from __future__ import annotations
@@ -93,7 +93,7 @@ def main():
 
 
 def benchmark_main():
-    """aag-benchmark [--models m1,m2] [--scenarios s1,s2] [--seed 42]"""
+    """arena-benchmark [--models m1,m2] [--scenarios s1,s2] [--seed 42]"""
     parser = argparse.ArgumentParser(
         description="Ad Arena — run benchmark across scenarios",
     )
@@ -149,7 +149,7 @@ def benchmark_main():
 
 
 def leaderboard_main():
-    """aag-leaderboard — generate static HTML from results."""
+    """arena-leaderboard — generate static HTML from results."""
     from ad_arena.ui.web_publisher import WebPublisher
 
     publisher = WebPublisher()
@@ -158,7 +158,7 @@ def leaderboard_main():
 
 
 def results_main():
-    """aag-results — print summary table to terminal."""
+    """arena-results — print summary table to terminal."""
     from ad_arena.benchmark.results_store import ResultsStore
     from ad_arena.benchmark.scoring import compute_leaderboard
 

@@ -43,8 +43,11 @@ class BenchmarkHarness:
         llm_configs: list[dict] | None = None,
         scenario_names: list[str] | None = None,
         root_seed: int = 42,
+        skip_baselines: bool = False,
+        num_runs: int = 1,
     ) -> None:
         self._root_seed = root_seed
+        self._num_runs = num_runs
         self._seed_manager = SeedManager(root_seed)
         self._results_store = ResultsStore()
 
@@ -66,7 +69,8 @@ class BenchmarkHarness:
 
         # Build run configs
         self._configs: list[RunConfig] = []
-        self._build_baseline_configs()
+        if not skip_baselines:
+            self._build_baseline_configs()
         self._build_llm_configs(llm_configs or [])
 
     def _build_baseline_configs(self) -> None:
@@ -88,41 +92,67 @@ class BenchmarkHarness:
                 )
 
     def _build_llm_configs(self, llm_configs: list[dict]) -> None:
-        """Add LLM bidder configs for every scenario."""
+        """Add LLM bidder configs for every scenario, repeated num_runs times."""
         from ad_arena.agents.llm_bidder import LLMBidder
 
         for cfg in llm_configs:
             name = cfg["name"]
             llm_fn = cfg["llm_fn"]
             for scenario in self._scenarios.values():
-                # Capture loop variables properly
-                def _make_factory(n: str, fn: Callable) -> Callable[[], Bidder]:
-                    return lambda: LLMBidder(name=n, llm_fn=fn)
+                for run_idx in range(self._num_runs):
+                    # Capture loop variables properly
+                    def _make_factory(n: str, fn: Callable) -> Callable[[], Bidder]:
+                        return lambda: LLMBidder(name=n, llm_fn=fn)
 
-                self._configs.append(
-                    RunConfig(
-                        model_name=name,
-                        model_type="llm",
-                        bidder_factory=_make_factory(name, llm_fn),
-                        scenario=scenario,
+                    run_label = name
+                    self._configs.append(
+                        RunConfig(
+                            model_name=run_label,
+                            model_type="llm",
+                            bidder_factory=_make_factory(name, llm_fn),
+                            scenario=scenario,
+                        )
                     )
-                )
 
     def run_all(self) -> list[RunResult]:
         """Execute all (model, scenario) pairs and return results."""
         results: list[RunResult] = []
+        total = len(self._configs)
+        overall_start = time.monotonic()
 
         for i, config in enumerate(self._configs, 1):
+            elapsed = time.monotonic() - overall_start
+            if i > 1:
+                avg_per_run = elapsed / (i - 1)
+                eta = avg_per_run * (total - i + 1)
+                eta_min = int(eta // 60)
+                eta_sec = int(eta % 60)
+                eta_str = f" | ETA: {eta_min}m{eta_sec:02d}s"
+            else:
+                eta_str = ""
+
             logger.info(
-                "Run %d/%d: %s on %s",
+                "[%d/%d] %s on %s%s",
                 i,
-                len(self._configs),
+                total,
                 config.model_name,
                 config.scenario.name,
+                eta_str,
             )
             try:
+                run_start = time.monotonic()
                 result = self._run_single(config)
+                run_time = time.monotonic() - run_start
                 results.append(result)
+                logger.info(
+                    "[%d/%d] %s on %s — done in %.1fs (profit=$%.2f)",
+                    i,
+                    total,
+                    config.model_name,
+                    config.scenario.name,
+                    run_time,
+                    result.episode_result.total_profit,
+                )
                 # Persist result
                 try:
                     self._results_store.save(result)
@@ -138,6 +168,11 @@ class BenchmarkHarness:
                     config.model_name,
                     config.scenario.name,
                 )
+
+        total_time = time.monotonic() - overall_start
+        total_min = int(total_time // 60)
+        total_sec = int(total_time % 60)
+        logger.info("All %d runs completed in %dm%02ds", total, total_min, total_sec)
 
         # Update leaderboard with all results
         if results:

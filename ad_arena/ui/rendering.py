@@ -15,7 +15,6 @@ def render_episode_start(config: EpisodeConfig) -> str:
         f"You are managing a search ads campaign for a running shoes store.",
         f"",
         f"Budget: ${config.budget:,.0f} over {config.duration_days} days",
-        f"Competitors: {config.num_competitors} other advertisers",
         f"",
         f"Available keywords to bid on:",
     ]
@@ -40,7 +39,12 @@ def render_episode_start(config: EpisodeConfig) -> str:
 
 
 
-def render_feedback(feedback: DailyFeedback, total_budget: float, total_days: int) -> str:
+def render_feedback(
+    feedback: DailyFeedback,
+    total_budget: float,
+    total_days: int,
+    cumulative_stats: dict[str, dict] | None = None,
+) -> str:
     """Render daily feedback as natural language for LLM consumption."""
     lines = []
 
@@ -99,6 +103,18 @@ def render_feedback(feedback: DailyFeedback, total_budget: float, total_days: in
                 f"{stats.clicks} clicks, {stats.conversions} conv, "
                 f"ROAS {kw_roas}{flag}"
             )
+
+        # Flag keywords with zero impressions
+        all_keywords_seen = set(feedback.keyword_stats.keys())
+        zero_imp_keywords = [
+            kw for kw, stats in feedback.keyword_stats.items()
+            if stats.impressions == 0
+        ]
+        if zero_imp_keywords:
+            lines.append("")
+            lines.append("⚠ Keywords with ZERO impressions (try raising bids to clear auction floor):")
+            for kw in zero_imp_keywords:
+                lines.append(f'  - "{kw}"')
         lines.append("")
 
     # Per-variant performance breakdown
@@ -116,6 +132,30 @@ def render_feedback(feedback: DailyFeedback, total_budget: float, total_days: in
                     f"{v.impressions} imp, {v.clicks} clicks, "
                     f"{v.conversions} conv, ROAS {v_roas}, CTR {v_ctr}"
                 )
+        lines.append("")
+
+    # Cumulative per-keyword stats (all days so far)
+    if cumulative_stats:
+        lines.append("Cumulative Keyword Performance (all days):")
+        for kw in sorted(cumulative_stats.keys()):
+            cs = cumulative_stats[kw]
+            c_spend = cs.get("spend", 0)
+            c_clicks = cs.get("clicks", 0)
+            c_conv = cs.get("conversions", 0)
+            c_rev = cs.get("revenue", 0)
+            c_imp = cs.get("impressions", 0)
+            c_roas = f"{c_rev / c_spend:.2f}x" if c_spend > 0 else "n/a"
+            c_ctr = f"{c_clicks / c_imp:.1%}" if c_imp > 0 else "n/a"
+            flag = ""
+            if c_spend > 0 and c_rev < c_spend:
+                flag = "  ← cumulative loss"
+            elif c_spend > 0 and c_rev > c_spend * 2:
+                flag = "  ← strong performer"
+            lines.append(
+                f'  "{kw}": ${c_spend:.2f} spend, {c_imp} imp, '
+                f"{c_clicks} clicks, {c_conv} conv, "
+                f"ROAS {c_roas}, CTR {c_ctr}{flag}"
+            )
         lines.append("")
 
     return "\n".join(lines)

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ad Arena — LLM Leaderboard</title>
+<style>
+  :root {
+    --bg: #f8f9fa; --card: #fff; --border: #dee2e6;
+    --text: #212529; --muted: #6c757d; --accent: #0d6efd;
+    --llm: #6f42c1; --baseline: #198754;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+         background:var(--bg); color:var(--text); line-height:1.6; }
+  .container { max-width:1200px; margin:0 auto; padding:2rem 1rem; }
+  h1 { font-size:1.75rem; margin-bottom:.25rem; }
+  h3 { font-size:1.1rem; margin-bottom:.75rem; color:var(--text); }
+  .subtitle { color:var(--muted); margin-bottom:1.5rem; }
+
+  /* Suite toggle (CE / SO) */
+  .suite-toggle { display:flex; gap:0; margin-bottom:1rem; }
+  .suite-btn {
+    padding:.5rem 1.25rem; border:1px solid var(--border); background:var(--card);
+    cursor:pointer; font-size:.9rem; font-weight:600; color:var(--muted);
+    border-bottom:2px solid transparent;
+  }
+  .suite-btn:first-child { border-radius:6px 0 0 0; }
+  .suite-btn:last-child { border-radius:0 6px 0 0; }
+  .suite-btn.active { color:var(--accent); border-bottom-color:var(--accent); background:#fff; }
+
+  /* Scenario tabs */
+  .scenario-tabs { display:flex; gap:.25rem; margin-bottom:1.25rem; flex-wrap:wrap; }
+  .scenario-tab-btn {
+    padding:.4rem 1rem; border:1px solid var(--border); background:var(--card);
+    cursor:pointer; font-size:.85rem; font-weight:500; color:var(--muted);
+    border-radius:6px; transition: all .15s;
+  }
+  .scenario-tab-btn:hover { background:#e9ecef; }
+  .scenario-tab-btn.active { color:#fff; background:var(--accent); border-color:var(--accent); }
+
+  .scenario-panel { display:none; }
+  .scenario-panel.active { display:block; }
+  .suite-panel { display:none; }
+  .suite-panel.active { display:block; }
+
+  .table-wrap { overflow-x:auto; background:var(--card); border:1px solid var(--border); border-radius:8px; }
+  table { width:100%; border-collapse:collapse; font-size:.875rem; }
+  thead th { position:sticky; top:0; background:var(--card); padding:.6rem .75rem;
+              text-align:left; border-bottom:2px solid var(--border); white-space:nowrap; }
+  tbody td { padding:.5rem .75rem; border-bottom:1px solid var(--border); white-space:nowrap; }
+  tbody tr:hover { background:#f1f3f5; }
+  .badge { display:inline-block; padding:.15rem .5rem; border-radius:12px;
+            font-size:.75rem; font-weight:600; text-transform:uppercase; letter-spacing:.03em; }
+  .type-llm { background:#ede7f6; color:var(--llm); }
+  .type-baseline { background:#e8f5e9; color:var(--baseline); }
+
+  .section { margin-top:2.5rem; }
+  .section h2 { font-size:1.25rem; margin-bottom:.75rem; }
+  .section p, .section li { color:var(--muted); font-size:.9rem; }
+  .section ul { padding-left:1.25rem; }
+  footer { margin-top:3rem; text-align:center; color:var(--muted); font-size:.8rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Ad Arena &mdash; LLM Leaderboard</h1>
+  <p class="subtitle">Comparing LLM and baseline bidding strategies across standardized ad-auction scenarios.</p>
+
+  <!-- Suite toggle -->
+  <div class="suite-toggle">
+    <button class="suite-btn active" onclick="switchSuite('ce')">Campaign Efficiency</button>
+    <button class="suite-btn" onclick="switchSuite('so')">Strategy Optimization</button>
+  </div>
+
+  <!-- Scenario tabs -->
+  <div class="scenario-tabs">
+    <button class="scenario-tab-btn active" onclick="switchScenario('aggregated')">All Scenarios (Aggregated)</button>
+    <button class="scenario-tab-btn" onclick="switchScenario('DiverseVertical-v1')">DiverseVertical-v1</button>
+<button class="scenario-tab-btn" onclick="switchScenario('HighCompetition-v1')">HighCompetition-v1</button>
+<button class="scenario-tab-btn" onclick="switchScenario('SearchAds-v1')">SearchAds-v1</button>
+  </div>
+
+  <!-- Aggregated panel -->
+  <div id="scenario-aggregated" class="scenario-panel active">
+    <h3>Aggregated across all scenarios</h3>
+    <div class="suite-tables">
+      <div class="suite-ce-panel suite-panel active">
+        <div class="table-wrap"><table><thead>
+<tr>
+  <th>Rank</th><th>Model</th><th>Type</th><th>Profit</th>
+  <th>ROAS</th><th>CPA</th><th>CTR</th><th>CVR</th>
+  <th>Conv</th><th>Learning Rate</th><th>Learning Days %</th><th>API Calls</th>
+</tr>
+</thead>
+          <tbody><tr><td>1</td><td>claude-sonnet-4.6</td><td><span class="badge type-llm">LLM</span></td><td>14,657.97</td><td>3.40</td><td>30.06</td><td>0.2708</td><td>0.1028</td><td>609</td><td>-0.10</td><td>0.34</td><td>90</td></tr>
+<tr><td>2</td><td>deepseek-r1</td><td><span class="badge type-llm">LLM</span></td><td>13,085.39</td><td>2.76</td><td>30.90</td><td>0.2933</td><td>0.0788</td><td>720</td><td>-0.10</td><td>0.53</td><td>90</td></tr>
+<tr><td>3</td><td>llama3-3-70b</td><td><span class="badge type-llm">LLM</span></td><td>10,742.29</td><td>2.56</td><td>38.82</td><td>0.2829</td><td>0.0871</td><td>532</td><td>1.34</td><td>0.68</td><td>90</td></tr>
+<tr><td>4</td><td>claude-opus-4.5</td><td><span class="badge type-llm">LLM</span></td><td>10,666.44</td><td>2.75</td><td>35.50</td><td>0.2919</td><td>0.0927</td><td>515</td><td>0.62</td><td>0.23</td><td>90</td></tr>
+<tr><td>5</td><td>nova-premier</td><td><span class="badge type-llm">LLM</span></td><td>10,127.86</td><td>2.69</td><td>36.47</td><td>0.2803</td><td>0.0951</td><td>494</td><td>-0.08</td><td>0.21</td><td>76</td></tr>
+<tr><td>6</td><td>claude-opus-4.6</td><td><span class="badge type-llm">LLM</span></td><td>9,558.93</td><td>2.60</td><td>34.11</td><td>0.3003</td><td>0.0857</td><td>525</td><td>-0.08</td><td>0.29</td><td>90</td></tr>
+<tr><td>7</td><td>mistral-large</td><td><span class="badge type-llm">LLM</span></td><td>9,093.67</td><td>2.17</td><td>32.68</td><td>0.2914</td><td>0.0752</td><td>713</td><td>0.08</td><td>0.64</td><td>83</td></tr>
+<tr><td>8</td><td>KeywordValue</td><td><span class="badge type-baseline">Baseline</span></td><td>3,101.69</td><td>1.83</td><td>35.39</td><td>0.1672</td><td>0.0467</td><td>318</td><td>6.44</td><td>0.00</td><td>0</td></tr>
+<tr><td>9</td><td>BudgetPacer</td><td><span class="badge type-baseline">Baseline</span></td><td>790.61</td><td>1.29</td><td>39.03</td><td>0.1458</td><td>0.0313</td><td>209</td><td>-0.70</td><td>0.00</td><td>0</td></tr>
+<tr><td>10</td><td>SimpleBidder($1.50)</td><td><span class="badge type-baseline">Baseline</span></td><td>726.41</td><td>1.54</td><td>29.21</td><td>0.1767</td><td>0.0317</td><td>138</td><td>-1.02</td><td>0.00</td><td>0</td></tr></tbody>
+        </table></div>
+      </div>
+      <div class="suite-so-panel suite-panel">
+        <div class="table-wrap"><table><thead>
+<tr>
+  <th>Rank</th><th>Model</th><th>Type</th><th>Profit</th>
+  <th>ROAS</th><th>CPA</th><th>CTR</th><th>CVR</th>
+  <th>Conv</th><th>Learning Rate</th><th>Learning Days %</th><th>API Calls</th>
+</tr>
+</thead>
+          <tbody><tr><td>1</td><td>llama3-3-70b</td><td><span class="badge type-llm">LLM</span></td><td>3,248.60</td><td>2.56</td><td>38.82</td><td>0.2829</td><td>0.0871</td><td>532</td><td>1.34</td><td>0.68</td><td>90</td></tr>
+<tr><td>2</td><td>claude-sonnet-4.6</td><td><span class="badge type-llm">LLM</span></td><td>3,239.68</td><td>3.40</td><td>30.06</td><td>0.2708</td><td>0.1028</td><td>609</td><td>-0.10</td><td>0.34</td><td>90</td></tr>
+<tr><td>3</td><td>claude-opus-4.5</td><td><span class="badge type-llm">LLM</span></td><td>2,937.01</td><td>2.75</td><td>35.50</td><td>0.2919</td><td>0.0927</td><td>515</td><td>0.62</td><td>0.23</td><td>90</td></tr>
+<tr><td>4</td><td>deepseek-r1</td><td><span class="badge type-llm">LLM</span></td><td>2,674.21</td><td>2.76</td><td>30.90</td><td>0.2933</td><td>0.0788</td><td>720</td><td>-0.10</td><td>0.53</td><td>90</td></tr>
+<tr><td>5</td><td>claude-opus-4.6</td><td><span class="badge type-llm">LLM</span></td><td>2,182.82</td><td>2.60</td><td>34.11</td><td>0.3003</td><td>0.0857</td><td>525</td><td>-0.08</td><td>0.29</td><td>90</td></tr>
+<tr><td>6</td><td>nova-premier</td><td><span class="badge type-llm">LLM</span></td><td>1,778.13</td><td>2.69</td><td>36.47</td><td>0.2803</td><td>0.0951</td><td>494</td><td>-0.08</td><td>0.21</td><td>76</td></tr>
+<tr><td>7</td><td>mistral-large</td><td><span class="badge type-llm">LLM</span></td><td>1,249.73</td><td>2.17</td><td>32.68</td><td>0.2914</td><td>0.0752</td><td>713</td><td>0.08</td><td>0.64</td><td>83</td></tr>
+<tr><td>8</td><td>KeywordValue</td><td><span class="badge type-baseline">Baseline</span></td><td>1,117.22</td><td>1.83</td><td>35.39</td><td>0.1672</td><td>0.0467</td><td>318</td><td>6.44</td><td>0.00</td><td>0</td></tr>
+<tr><td>9</td><td>BudgetPacer</td><td><span class="badge type-baseline">Baseline</span></td><td>282.09</td><td>1.29</td><td>39.03</td><td>0.1458</td><td>0.0313</td><td>209</td><td>-0.70</td><td>0.00</td><td>0</td></tr>
+<tr><td>10</td><td>SimpleBidder($1.50)</td><td><span class="badge type-baseline">Baseline</span></td><td>250.90</td><td>1.54</td><td>29.21</td><td>0.1767</td><td>0.0317</td><td>138</td><td>-1.02</td><td>0.00</td><td>0</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Per-scenario panels -->
+  
+<div id="scenario-DiverseVertical-v1" class="scenario-panel">
+  <h3>DiverseVertical-v1</h3>
+  <div class="suite-tables">
+    <div class="suite-ce-panel suite-panel active">
+      <div class="table-wrap"><table><thead>
+<tr>
+  <th>Rank</th><th>Model</th><th>Type</th><th>Profit</th>
+  <th>ROAS</th><th>CPA</th><th>CTR</th><th>CVR</th>
+  <th>Conv</th><th>Learning Rate</th><th>Learning Days %</th><th>API Calls</th>
+</tr>
+</thead>
+        <tbody><tr><td>1</td><td>deepseek-r1</td><td><span class="badge type-llm">LLM</span></td><td>14,017.92</td><td>2.86</td><td>21.57</td><td>0.2792</td><td>0.0712</td><td>349</td><td>-0.09</td><td>0.28</td><td>30</td></tr>
+<tr><td>2</td><td>mistral-large</td><td><span class="badge type-llm">LLM</span></td><td>8,844.60</td><td>2.01</td><td>27.57</td><td>0.2657</td><td>0.0668</td><td>319</td><td>0.35</td><td>0.59</td><td>30</td></tr>
+<tr><td>3</td><td>KeywordValue</td><td><span class="badge type-baseline">Baseline</span></td><td>7,038.82</td><td>2.11</td><td>34.41</td><td>0.1677</td><td>0.0716</td><td>185</td><td>1.74</td><td>0.00</td><td>0</td></tr>
+<tr><td>4</td><td>claude-sonnet-4.6</td><td><span class="badge type-llm">LLM</span></td><td>5,338.90</td><td>2.61</td><td>31.19</td><td>0.1941</td><td>0.0559</td><td>106</td><td>-0.41</td><td>0.38</td><td>30</td></tr>
+<tr><td>5</td><td>claude-opus-4.6</td><td><span class="badge type-llm">LLM</span></td><td>3,989.98</td><td>2.34</td><td>32.10</td><td>0.2158</td><td>0.0637</td><td>93</td><td>-0.49</td><td>0.00</td><td>30</td></tr>
+<tr><td>6</td><td>claude-opus-4.5</td><td><span class="badge type-llm">LLM</span></td><td>3,730.36</td><td>2.10</td><td>35.73</td><td>0.2218</td><td>0.0619</td><td>95</td><td>0.83</td><td>0.00</td><td>30</td></tr>
+<tr><td>7</td><td>llama3-3-70b</td><td><span class="badge type-llm">LLM</span></td><td>3,616.87</td><td>1.64</td><td>27.71</td><td>0.2980</td><td>0.0584</td><td>204</td><td>-0.02</td><td>0.52</td><td>30</td></tr>
+<tr><td>8</td><td>nova-premier</td><td><span class="badge type-llm">LLM</span></td><td>3,283.59</td><td>2.09</td><td>35.91</td><td>0.2234</td><td>0.0553</td><td>84</td><td>-0.26</td><td>0.03</td><td>30</td></tr>
+<tr><td>9</td><td>BudgetPacer</td><td><span class="badge type-baseline">Baseline</span></td><td>106.84</td><td>1.06</td><td>42.39</td><td>0.1033</td><td>0.0400</td><td>41</td><td>-1.48</td><td>0.00</td><td>0</td></tr>
+<tr><td>10</td><td>SimpleBidder($1.50)</td><td><span class="badge type-baseline">Baseline</span></td><td>-114.74</td><td>0.44</td><td>102.37</td><td>0.0882</td><td>0.0137</td><td>2</td><td>-4.67</td><td>0.00</td><td>0</td></tr></tbody>
+      </table></div>
+    </div>
+    <div class="suite-so-panel suite-panel">
+      <div class="table-wrap"><table><thead>
+<tr>
+  <th>Rank</th><th>Model</th><th>Type</th><th>Profit</th>
+  <th>ROAS</th><th>CPA</th><th>CTR</th><th>CVR</th>
+  <th>Conv</th><th>Learning Rate</th><th>Learning Days %</th><th>API Calls</th>
+</tr>
+</thead>
+        <tbody><tr><td>1</td><td>deepseek-r1</td><td><span class="badge type-llm">LLM</span></td><td>2,969.46</td><td>2.86</td><td>21.57</td><td>0.2792</td><td>0.0712</td><td>349</td><td>-0.09</td><td>0.28</td><td>30</td></tr>
+<tr><td>2</td><td>KeywordValue</td><td><span class="badge type-baseline">Baseline</span></td><td>2,540.37</td><td>2.11</td><td>34.41</td><td>0.1677</td><td>0.0716</td><td>185</td><td>1.74</td><td>0.00</td><td>0</td></tr>
+<tr><td>3</td><td>mistral-large</td><td><span class="badge type-llm">LLM</span></td><td>1,626.43</td><td>2.01</td><td>27.57</td><td>0.2657</td><td>0.0668</td><td>319</td><td>0.35</td><td>0.59</td><td>30</td></tr>
+<tr><td>4</td><td>claude-sonnet-4.6</td><td><span class="badge type-llm">LLM</span></td><td>1,324.55</td><td>2.61</td><td>31.19</td><td>0.1941</td><td>0.0559</td><td>106</td><td>-0.41</td><td>0.38</td><td>30</td></tr>
+<tr><td>5</td><td>claude-opus-4.5</td><td><span class="badge type-llm">LLM</span></td><td>1,156.60</td><td>2.10</td><td>35.73</td><td>0.2218</td><td>0.0619</td><td>95</td><td>0.83</td><td>0.00</td><td>30</td></tr>
+<tr><td>6</td><td>llama3-3-70b</td><td><span class="badge type-llm">LLM</span></td><td>1,088.99</td><td>1.64</td><td>27.71</td><td>0.2980</td><td>0.0584</td><td>204</td><td>-0.02</td><td>0.52</td><td>30</td></tr>
+<tr><td>7</td><td>nova-premier</td><td><span class="badge type-llm">LLM</span></td><td>895.06</td><td>2.09</td><td>35.91</td><td>0.2234</td><td>0.0553</td><td>84</td><td>-0.26</td><td>0.03</td><td>30</td></tr>
+<tr><td>8</td><td>claude-opus-4.6</td><td><span class="badge type-llm">LLM</span></td><td>584.09</td><td>2.34</td><td>32.10</td><td>0.2158</td><td>0.0637</td><td>93</td><td>-0.49</td><td>0.00</td><td>30</td></tr>
+<tr><td>9</td><td>SimpleBidder($1.50)</td><td><span class="badge type-baseline">Baseline</span></td><td>-21.02</td><td>0.44</td><td>102.37</td><td>0.0882</td><td>0.0137</td><td>2</td><td>-4.67</td><td>0.00</td><td>0</td></tr>
+<tr><td>10</td><td>BudgetPacer</td><td><span class="badge type-baseline">Baseline</span></td><td>-137.76</td><td>1.06</td><td>42.39</td><td>0.1033</td><td>0.0400</td><td>41</td><td>-1.48</td><td>0.00</td><td>0</td></tr></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<div id="scenario-HighCompetition-v1" class="scenario-panel">
+  <h3>HighCompetition-v1</h3>
+  <div class="suite-tables">
+    <div class="suite-ce-panel suite-panel active">
+      <div class="table-wrap"><table><thead>
+<tr>
+  <th>Rank</th><th>Model</th><th>Type</th><th>Profit</th>
+  <th>ROAS</th><th>CPA</th><th>CTR</th><th>CVR</th>
+  <th>Conv</th><th>Learning Rate</th><th>Learning Days %</th><th>API Calls</th>
+</tr>
+</thead>
+        <tbody><tr><td>1</td><td>nova-premier</td><td><span class="badge type-llm">LLM</span></td><td>7,530.00</td><td>2.51</td><td>48.08</td><td>0.3073</td><td>0.1258</td><td>104</td><td>0.00</td><td>0.33</td><td>16</td></tr>
+<tr><td>2</td><td>deepseek-r1</td><td><span class="badge type-llm">LLM</span></td><td>7,055.00</td><td>2.41</td><td>43.10</td><td>0.3064</td><td>0.1056</td><td>116</td><td>-0.43</td><td>0.69</td><td>30</td></tr>
+<tr><td>3</td><td>claude-sonnet-4.6</td><td><span class="badge type-llm">LLM</span></td><td>6,180.00</td><td>2.24</td><td>42.37</td><td>0.3206</td><td>0.0988</td><td>118</td><td>0.21</td><td>0.55</td><td>30</td></tr>
+<tr><td>4</td><td>mistral-large</td><td><span class="badge type-llm">LLM</span></td><td>5,905.00</td><td>2.18</td><td>40.00</td><td>0.3199</td><td>0.0998</td><td>125</td><td>0.00</td><td>0.73</td><td>23</td></tr>
+<tr><td>5</td><td>llama3-3-70b</td><td><span class="badge type-llm">LLM</span></td><td>5,890.00</td><td>2.18</td><td>58.14</td><td>0.2969</td><td>0.1123</td><td>86</td><td>4.09</td><td>0.72</td><td>30</td></tr>
+<tr><td>6</td><td>claude-opus-4.5</td><td><span class="badge type-llm">LLM</span></td><td>5,345.00</td><td>2.07</td><td>40.00</td><td>0.3322</td><td>0.0828</td><td>125</td><td>0.78</td><td>0.28</td><td>30</td></tr>
+<tr><td>7</td><td>claude-opus-4.6</td><td><span class="badge type-llm">LLM</span></td><td>4,305.00</td><td>1.86</td><td>45.45</td><td>0.3437</td><td>0.0887</td><td>110</td><td>-0.61</td><td>0.34</td><td>30</td></tr>
+<tr><td>8</td><td>SimpleBidder($1.50)</td><td><span class="badge type-baseline">Baseline</span></td><td>420.65</td><td>1.19</td><td>37.75</td><td>0.1907</td><td>0.0303</td><td>58</td><td>-0.03</td><td>0.00</td><td>0</td></tr>
+<tr><td>9</td><td>KeywordValue</td><td><span class="badge type-baseline">Baseline</span></td><td>294.12</td><td>1.27</td><td>35.51</td><td>0.1881</td><td>0.0323</td><td>31</td><td>-1.01</td><td>0.00</td><td>0</td></tr>
+<tr><td>10</td><td>BudgetPacer</td><td><span class="badge type-baseline">Baseline</span></td><td>-235.52</td><td>0.93</td><td>49.58</td><td>0.1813</td><td>0.0280</td><td>70</td><td>-1.37</td><td>0.00</td><td>0</td></tr></tbody>
+      </table></div>
+    </div>
+    <div class="suite-so-panel suite-panel">
+      <div class="table-wrap"><table><thead>
+<tr>
+  <th>Rank</th><th>Model</th><th>Type</th><th>Profit</th>
+  <th>ROAS</th><th>CPA</th><th>CTR</th><th>CVR</th>
+  <th>Conv</th><th>Learning Rate</th><th>Learning Days %</th><th>API Calls</th>
+</tr>
+</thead>
+        <tbody><tr><td>1</td><td>llama3-3-70b</td><td><span class="badge type-llm">LLM</span></td><td>2,521.53</td><td>2.18</td><td>58.14</td><td>0.2969</td><td>0.1123</td><td>86</td><td>4.09</td><td>0.72</td><td>30</td></tr>
+<tr><td>2</td><td>claude-opus-4.5</td><td><span class="badge type-llm">LLM</span></td><td>1,652.90</td><td>2.07</td><td>40.00</td><td>0.3322</td><td>0.0828</td><td>125</td><td>0.78</td><td>0.28</td><td>30</td></tr>
+<tr><td>3</td><td>claude-sonnet-4.6</td><td><span class="badge type-llm">LLM</span></td><td>1,349.78</td><td>2.24</td><td>42.37</td><td>0.3206</td><td>0.0988</td><td>118</td><td>0.21</td><td>0.55</td><td>30</td></tr>
+<tr><td>4</td><td>deepseek-r1</td><td><span class="badge type-llm">LLM</span></td><td>1,016.99</td><td>2.41</td><td>43.10</td><td>0.3064</td><td>0.1056</td><td>116</td><td>-0.43</td><td>0.69</td><td>30</td></tr>
+<tr><td>5</td><td>claude-opus-4.6</td><td><span class="badge type-llm">LLM</span></td><td>625.77</td><td>1.86</td><td>45.45</td><td>0.3437</td><td>0.0887</td><td>110</td><td>-0.61</td><td>0.34</td><td>30</td></tr>
+<tr><td>6</td><td>BudgetPacer</td><td><span class="badge type-baseline">Baseline</span></td><td>57.74</td><td>0.93</td><td>49.58</td><td>0.1813</td><td>0.0280</td><td>70</td><td>-1.37</td><td>0.00</td><td>0</td></tr>
+<tr><td>7</td><td>SimpleBidder($1.50)</td><td><span class="badge type-baseline">Baseline</span></td><td>56.77</td><td>1.19</td><td>37.75</td><td>0.1907</td><td>0.0303</td><td>58</td><td>-0.03</td><td>0.00</td><td>0</td></tr>
+<tr><td>8</td><td>mistral-large</td><td><span class="badge type-llm">LLM</span></td><td>0.00</td><td>2.18</td><td>40.00</td><td>0.3199</td><td>0.0998</td><td>125</td><td>0.00</td><td>0.73</td><td>23</td></tr>
+<tr><td>9</td><td>nova-premier</td><td><span class="badge type-llm">LLM</span></td><td>0.00</td><td>2.51</td><td>48.08</td><td>0.3073</td><td>0.1258</td><td>104</td><td>0.00</td><td>0.33</td><td>16</td></tr>
+<tr><td>10</td><td>KeywordValue</td><td><span class="badge type-baseline">Baseline</span></td><td>-1.70</td><td>1.27</td><td>35.51</td><td>0.1881</td><td>0.0323</td><td>31</td><td>-1.01</td><td>0.00</td><td>0</td></tr></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<div id="scenario-SearchAds-v1" class="scenario-panel">
+  <h3>SearchAds-v1</h3>
+  <div class="suite-tables">
+    <div class="suite-ce-panel suite-panel active">
+      <div class="table-wrap"><table><thead>
+<tr>
+  <th>Rank</th><th>Model</th><th>Type</th><th>Profit</th>
+  <th>ROAS</th><th>CPA</th><th>CTR</th><th>CVR</th>
+  <th>Conv</th><th>Learning Rate</th><th>Learning Days %</th><th>API Calls</th>
+</tr>
+</thead>
+        <tbody><tr><td>1</td><td>claude-sonnet-4.6</td><td><span class="badge type-llm">LLM</span></td><td>32,455.00</td><td>4.25</td><td>25.97</td><td>0.3381</td><td>0.1359</td><td>385</td><td>-0.11</td><td>0.10</td><td>30</td></tr>
+<tr><td>2</td><td>claude-opus-4.5</td><td><span class="badge type-llm">LLM</span></td><td>22,923.95</td><td>3.32</td><td>33.51</td><td>0.3318</td><td>0.1175</td><td>295</td><td>0.23</td><td>0.41</td><td>30</td></tr>
+<tr><td>3</td><td>llama3-3-70b</td><td><span class="badge type-llm">LLM</span></td><td>22,720.00</td><td>3.27</td><td>41.32</td><td>0.2536</td><td>0.1309</td><td>242</td><td>-0.06</td><td>0.79</td><td>30</td></tr>
+<tr><td>4</td><td>claude-opus-4.6</td><td><span class="badge type-llm">LLM</span></td><td>20,381.81</td><td>3.05</td><td>30.82</td><td>0.3419</td><td>0.0940</td><td>322</td><td>0.86</td><td>0.52</td><td>30</td></tr>
+<tr><td>5</td><td>nova-premier</td><td><span class="badge type-llm">LLM</span></td><td>19,570.00</td><td>2.96</td><td>32.68</td><td>0.3151</td><td>0.1075</td><td>306</td><td>0.02</td><td>0.31</td><td>30</td></tr>
+<tr><td>6</td><td>deepseek-r1</td><td><span class="badge type-llm">LLM</span></td><td>18,183.25</td><td>2.87</td><td>38.12</td><td>0.3134</td><td>0.0815</td><td>255</td><td>0.21</td><td>0.62</td><td>30</td></tr>
+<tr><td>7</td><td>mistral-large</td><td><span class="badge type-llm">LLM</span></td><td>12,531.41</td><td>2.32</td><td>35.33</td><td>0.3242</td><td>0.0778</td><td>269</td><td>-0.12</td><td>0.62</td><td>30</td></tr>
+<tr><td>8</td><td>BudgetPacer</td><td><span class="badge type-baseline">Baseline</span></td><td>2,500.50</td><td>1.85</td><td>30.10</td><td>0.1426</td><td>0.0311</td><td>98</td><td>0.77</td><td>0.00</td><td>0</td></tr>
+<tr><td>9</td><td>KeywordValue</td><td><span class="badge type-baseline">Baseline</span></td><td>1,972.13</td><td>1.52</td><td>37.14</td><td>0.1616</td><td>0.0313</td><td>102</td><td>18.59</td><td>0.00</td><td>0</td></tr>
+<tr><td>10</td><td>SimpleBidder($1.50)</td><td><span class="badge type-baseline">Baseline</span></td><td>1,873.31</td><td>2.14</td><td>20.98</td><td>0.1772</td><td>0.0340</td><td>78</td><td>1.64</td><td>0.00</td><td>0</td></tr></tbody>
+      </table></div>
+    </div>
+    <div class="suite-so-panel suite-panel">
+      <div class="table-wrap"><table><thead>
+<tr>
+  <th>Rank</th><th>Model</th><th>Type</th><th>Profit</th>
+  <th>ROAS</th><th>CPA</th><th>CTR</th><th>CVR</th>
+  <th>Conv</th><th>Learning Rate</th><th>Learning Days %</th><th>API Calls</th>
+</tr>
+</thead>
+        <tbody><tr><td>1</td><td>claude-sonnet-4.6</td><td><span class="badge type-llm">LLM</span></td><td>7,044.70</td><td>4.25</td><td>25.97</td><td>0.3381</td><td>0.1359</td><td>385</td><td>-0.11</td><td>0.10</td><td>30</td></tr>
+<tr><td>2</td><td>llama3-3-70b</td><td><span class="badge type-llm">LLM</span></td><td>6,135.29</td><td>3.27</td><td>41.32</td><td>0.2536</td><td>0.1309</td><td>242</td><td>-0.06</td><td>0.79</td><td>30</td></tr>
+<tr><td>3</td><td>claude-opus-4.5</td><td><span class="badge type-llm">LLM</span></td><td>6,001.54</td><td>3.32</td><td>33.51</td><td>0.3318</td><td>0.1175</td><td>295</td><td>0.23</td><td>0.41</td><td>30</td></tr>
+<tr><td>4</td><td>claude-opus-4.6</td><td><span class="badge type-llm">LLM</span></td><td>5,338.60</td><td>3.05</td><td>30.82</td><td>0.3419</td><td>0.0940</td><td>322</td><td>0.86</td><td>0.52</td><td>30</td></tr>
+<tr><td>5</td><td>nova-premier</td><td><span class="badge type-llm">LLM</span></td><td>4,439.34</td><td>2.96</td><td>32.68</td><td>0.3151</td><td>0.1075</td><td>306</td><td>0.02</td><td>0.31</td><td>30</td></tr>
+<tr><td>6</td><td>deepseek-r1</td><td><span class="badge type-llm">LLM</span></td><td>4,036.18</td><td>2.87</td><td>38.12</td><td>0.3134</td><td>0.0815</td><td>255</td><td>0.21</td><td>0.62</td><td>30</td></tr>
+<tr><td>7</td><td>mistral-large</td><td><span class="badge type-llm">LLM</span></td><td>2,122.76</td><td>2.32</td><td>35.33</td><td>0.3242</td><td>0.0778</td><td>269</td><td>-0.12</td><td>0.62</td><td>30</td></tr>
+<tr><td>8</td><td>BudgetPacer</td><td><span class="badge type-baseline">Baseline</span></td><td>926.31</td><td>1.85</td><td>30.10</td><td>0.1426</td><td>0.0311</td><td>98</td><td>0.77</td><td>0.00</td><td>0</td></tr>
+<tr><td>9</td><td>KeywordValue</td><td><span class="badge type-baseline">Baseline</span></td><td>812.99</td><td>1.52</td><td>37.14</td><td>0.1616</td><td>0.0313</td><td>102</td><td>18.59</td><td>0.00</td><td>0</td></tr>
+<tr><td>10</td><td>SimpleBidder($1.50)</td><td><span class="badge type-baseline">Baseline</span></td><td>716.95</td><td>2.14</td><td>20.98</td><td>0.1772</td><td>0.0340</td><td>78</td><td>1.64</td><td>0.00</td><td>0</td></tr></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+  <div class="section" id="how-it-works">
+    <h2>How It Works</h2>
+    <p>
+      The Ad Arena benchmark evaluates how well LLMs can learn to run
+      search-ad campaigns from data alone. Each model acts as a bidder in a
+      simulated ad auction, setting daily keyword bids, budgets, and ad copy
+      over a 30-day episode.
+    </p>
+    <h3>Evaluation Suites</h3>
+    <ul>
+      <li><strong>Campaign Efficiency</strong> &mdash; Total profit (revenue
+        minus spend) across all 30 days.</li>
+      <li><strong>Strategy Optimization</strong> &mdash; Profit from only the
+        final 7 days (days 24&ndash;30).</li>
+    </ul>
+  </div>
+
+  <footer>
+    Generated by Ad Arena &middot; <a href="https://github.com/ad-arena">GitHub</a>
+  </footer>
+</div>
+
+<script>
+var currentSuite = 'ce';
+
+function switchSuite(suite) {
+  currentSuite = suite;
+  document.querySelectorAll('.suite-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('.suite-btn').forEach(function(b) {
+    if ((suite === 'ce' && b.textContent.includes('Campaign')) ||
+        (suite === 'so' && b.textContent.includes('Strategy'))) {
+      b.classList.add('active');
+    }
+  });
+  // Toggle suite panels in all scenario panels
+  document.querySelectorAll('.suite-ce-panel').forEach(function(p) {
+    p.classList.toggle('active', suite === 'ce');
+  });
+  document.querySelectorAll('.suite-so-panel').forEach(function(p) {
+    p.classList.toggle('active', suite === 'so');
+  });
+}
+
+function switchScenario(id) {
+  document.querySelectorAll('.scenario-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.scenario-tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('scenario-' + id).classList.add('active');
+  // Highlight the clicked tab
+  var btns = document.querySelectorAll('.scenario-tab-btn');
+  for (var i = 0; i < btns.length; i++) {
+    if ((id === 'aggregated' && i === 0) ||
+        btns[i].getAttribute('onclick').indexOf("'" + id + "'") !== -1) {
+      btns[i].classList.add('active');
+    }
+  }
+  // Re-apply suite toggle
+  switchSuite(currentSuite);
+}
+</script>
+</body>
+</html>

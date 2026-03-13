@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from collections import defaultdict
 from dataclasses import asdict, fields, is_dataclass
 from datetime import datetime, timezone
@@ -210,9 +211,11 @@ class ResultsStore:
         for dual-suite leaderboard generation.
         """
         # Group by (model_name, scenario_name), pick highest total_profit (Campaign_Efficiency)
+        # Strip run suffixes like " (run 1)" so multiple runs aggregate under one model
         best: dict[tuple[str, str], RunResult] = {}
         for r in results:
-            key = (r.model_name, r.scenario_name)
+            base_name = re.sub(r"\s*\(run \d+\)$", "", r.model_name)
+            key = (base_name, r.scenario_name)
             if key not in best or r.episode_result.total_profit > best[key].episode_result.total_profit:
                 best[key] = r
 

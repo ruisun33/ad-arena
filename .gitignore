@@ -26,6 +26,9 @@ htmlcov/
 # Benchmark results (regenerated, not tracked)
 results/
 
+# LLM interaction logs
+logs/
+
 # OS
 .DS_Store
 Thumbs.db

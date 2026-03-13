@@ -1,6 +1,6 @@
 [build-system]
 requires = ["setuptools>=68.0", "wheel"]
-build-backend = "setuptools.backends._legacy:_Backend"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "ad-arena"
@@ -14,8 +14,11 @@ dependencies = ["numpy>=1.24", "pyyaml>=6.0"]
 [project.optional-dependencies]
 dev = ["pytest>=7.0", "pytest-cov", "hypothesis>=6.0"]
 
+[tool.setuptools.packages.find]
+include = ["ad_arena*"]
+
 [project.scripts]
-aag-run = "ad_arena.cli:main"
-aag-benchmark = "ad_arena.cli:benchmark_main"
-aag-leaderboard = "ad_arena.cli:leaderboard_main"
-aag-results = "ad_arena.cli:results_main"
+arena-run = "ad_arena.cli:main"
+arena-benchmark = "ad_arena.cli:benchmark_main"
+arena-leaderboard = "ad_arena.cli:leaderboard_main"
+arena-results = "ad_arena.cli:results_main"
